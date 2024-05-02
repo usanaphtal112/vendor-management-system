@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 from datetime import datetime
-import uuid
 
 
 class Vendor(models.Model):
@@ -38,7 +37,8 @@ class PurchaseOrder(models.Model):
         ("completed", "Completed"),
         ("canceled", "Canceled"),
     ]
-    po_number = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    po_number = models.CharField(max_length=50, unique=True)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE, related_name="purchase_orders"
     )
@@ -56,6 +56,19 @@ class PurchaseOrder(models.Model):
 
     def __str__(self):
         return f"{self.po_number}"
+
+    def save(self, *args, **kwargs):
+        if not self.po_number:
+            try:
+                latest_order = PurchaseOrder.objects.latest("id")
+                latest_po_number = int(
+                    latest_order.po_number.split("-")[-1]
+                )  # Extract the sequential part
+                new_po_number = latest_po_number + 1
+            except PurchaseOrder.DoesNotExist:
+                new_po_number = 1
+            self.po_number = f"PO-{new_po_number:04}"
+        super().save(*args, **kwargs)
 
 
 class HistoricalPerformance(models.Model):
