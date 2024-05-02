@@ -5,10 +5,11 @@ from datetime import datetime
 
 
 class Vendor(models.Model):
+    vendor_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=225)
     contact_details = models.TextField()
     vendor_code = models.CharField(max_length=15, unique=True)
-    on_time_delivery_rate = models.FloatField(default=0.0)
+    delivery_rate = models.FloatField(default=0.0)
     quality_rating_avg = models.FloatField(default=0.0)
     average_response_time = models.FloatField(default=0.0)
     fulfillment_rate = models.FloatField(default=0.0)
@@ -22,7 +23,7 @@ class Vendor(models.Model):
         formatted_date = now.strftime("%y%m%d")  # Use yy for year (2 digits)
         prefix = "VND-"  # You can customize the prefix
         try:
-            latest_vendor = Vendor.objects.latest("id")
+            latest_vendor = Vendor.objects.latest("vendor_id")
             # Use latest vendor ID for code generation if exists
             self.vendor_code = f"{prefix}{formatted_date}{latest_vendor.pk + 1:0>4}"
         except Vendor.DoesNotExist:
@@ -37,7 +38,7 @@ class PurchaseOrder(models.Model):
         ("completed", "Completed"),
         ("canceled", "Canceled"),
     ]
-
+    po_id = models.AutoField(primary_key=True)
     po_number = models.CharField(max_length=50, unique=True)
     vendor = models.ForeignKey(
         Vendor, on_delete=models.CASCADE, related_name="purchase_orders"
@@ -60,7 +61,7 @@ class PurchaseOrder(models.Model):
     def save(self, *args, **kwargs):
         if not self.po_number:
             try:
-                latest_order = PurchaseOrder.objects.latest("id")
+                latest_order = PurchaseOrder.objects.latest("po_id")
                 latest_po_number = int(
                     latest_order.po_number.split("-")[-1]
                 )  # Extract the sequential part

@@ -1,4 +1,4 @@
-from django.db.models import Avg
+from django.db.models import Avg, F
 
 
 def calculate_on_time_delivery_rate(vendor):
