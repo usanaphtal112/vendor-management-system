@@ -15,7 +15,7 @@ urlpatterns = [
         name="vendor-list-create",
     ),
     path(
-        "vendors/<int:pk>/",
+        "vendors/<int:vendor_id>/",
         VendorRetrieveUpdateDestroyAPIView.as_view(),
         name="vendor-detail",
     ),

@@ -5,28 +5,50 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import VendorPerformanceSerializer
 from datetime import datetime
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(
+    description="List and create a new Vendors",
+    tags=["Vendor"],
+)
 class VendorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 
 
+@extend_schema(
+    description="View details, Update and delete vendor",
+    tags=["Vendor"],
+)
 class VendorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+    lookup_field = "vendor_id"
 
 
+@extend_schema(
+    description="List and create a new Purchase Order",
+    tags=["Purchase Order"],
+)
 class PurchaseOrderListCreateAPIView(generics.ListCreateAPIView):
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
 
 
+@extend_schema(
+    description="View details, Update and delete Purchase Order",
+    tags=["Purchase Order"],
+)
 class PurchaseOrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
 
 
+@extend_schema(
+    description="List Vendor perfomance",
+    tags=["Vendor"],
+)
 class VendorPerformanceView(APIView):
     def get(self, request, vendor_id):
         try:
@@ -39,6 +61,10 @@ class VendorPerformanceView(APIView):
             )
 
 
+@extend_schema(
+    description="Acknownoldge the Order",
+    tags=["Purchase Order"],
+)
 class AcknowledgePurchaseOrderView(APIView):
     def post(self, request, po_id):
         try:
