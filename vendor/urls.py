@@ -4,6 +4,8 @@ from .views import (
     VendorRetrieveUpdateDestroyAPIView,
     PurchaseOrderListCreateAPIView,
     PurchaseOrderRetrieveUpdateDestroyAPIView,
+    VendorPerformanceView,
+    AcknowledgePurchaseOrderView,
 )
 
 urlpatterns = [
@@ -26,5 +28,15 @@ urlpatterns = [
         "purchase_orders/<int:pk>/",
         PurchaseOrderRetrieveUpdateDestroyAPIView.as_view(),
         name="purchaseorder-detail",
+    ),
+    path(
+        "vendors/<int:vendor_id>/performance/",
+        VendorPerformanceView.as_view(),
+        name="vendor-performance-metrics",
+    ),
+    path(
+        "purchase_orders/<int:po_id>/acknowledge/",
+        AcknowledgePurchaseOrderView.as_view(),
+        name="purchase-order-acknowledgment",
     ),
 ]
