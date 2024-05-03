@@ -17,7 +17,7 @@ class PurchaseOrderSerializer(serializers.ModelSerializer):
 
 
 class VendorPerformanceSerializer(serializers.Serializer):
-    delivery_rate = serializers.FloatField()
+    on_time_delivery_rate = serializers.FloatField()
     quality_rating_avg = serializers.FloatField()
     average_response_time = serializers.FloatField()
     fulfillment_rate = serializers.FloatField()
