@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import VendorPerformanceSerializer
 from datetime import datetime
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_spectacular.utils import extend_schema
 
 
@@ -15,6 +17,8 @@ from drf_spectacular.utils import extend_schema
 class VendorListCreateAPIView(generics.ListCreateAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 @extend_schema(
@@ -25,6 +29,8 @@ class VendorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
     lookup_field = "vendor_id"
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 @extend_schema(
@@ -34,6 +40,8 @@ class VendorRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
 class PurchaseOrderListCreateAPIView(generics.ListCreateAPIView):
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 @extend_schema(
@@ -43,6 +51,8 @@ class PurchaseOrderListCreateAPIView(generics.ListCreateAPIView):
 class PurchaseOrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PurchaseOrder.objects.all()
     serializer_class = PurchaseOrderSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 @extend_schema(
@@ -50,6 +60,9 @@ class PurchaseOrderRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAP
     tags=["Vendor"],
 )
 class VendorPerformanceView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, vendor_id):
         try:
             vendor = Vendor.objects.get(pk=vendor_id)
@@ -66,6 +79,9 @@ class VendorPerformanceView(APIView):
     tags=["Purchase Order"],
 )
 class AcknowledgePurchaseOrderView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, po_id):
         try:
             purchase_order = PurchaseOrder.objects.get(pk=po_id)
@@ -79,9 +95,6 @@ class AcknowledgePurchaseOrderView(APIView):
             # Update acknowledgment_date to current timestamp
             purchase_order.acknowledgment_date = datetime.now()
             purchase_order.save()
-
-            # Trigger recalculation of average_response_time
-            # This logic should ideally be handled by signals
 
             return Response(
                 {"message": "Purchase order acknowledged successfully"},
