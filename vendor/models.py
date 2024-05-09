@@ -46,7 +46,7 @@ class PurchaseOrder(models.Model):
     )
     order_date = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(default=timezone.now() + timedelta(days=7))
-    # actual_delivery_date = models.DateTimeField(null=True, blank=True)
+    actual_delivery_date = models.DateTimeField(null=True, blank=True)
     items = models.JSONField()
     quantity = models.PositiveIntegerField()
     status = status = models.CharField(

@@ -1,13 +1,15 @@
-from django.db.models import Avg, F
+from django.db.models import Avg, F, Q
 
 
 def calculate_on_time_delivery_rate(vendor):
     try:
         completed_orders = vendor.purchase_orders.filter(status="completed")
         total_completed_orders = completed_orders.count()
+
         on_time_orders = completed_orders.filter(
-            delivery_date__lte=F("delivery_date")
+            Q(status="completed") & Q(actual_delivery_date__lte=F("delivery_date"))
         ).count()
+
         return (on_time_orders / total_completed_orders) * 100
     except ZeroDivisionError:
         return 0
@@ -33,9 +35,7 @@ def calculate_average_response_time(vendor):
             (order.acknowledgment_date - order.issue_date).total_seconds()
             for order in all_orders
         )
-        return (
-            total_response_time / total_orders
-        ) / 3600  # Calculate average response time in hours
+        return (total_response_time / total_orders) / 3600
     except ZeroDivisionError:
         return 0
 
