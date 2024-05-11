@@ -25,7 +25,7 @@ The Vendor Management System is designed to streamline vendor-related processes 
 
 ## Technical Requirements
 
-- Python 3.x
+- Python 3.9 or above
 - Django
 - Django REST Framework
 - Other dependencies (specified in requirements.txt)
@@ -94,3 +94,16 @@ To run tests, execute the following command:
 ```bash
 python manage.py test
 ```
+
+## Testing Details
+
+- Tested all models for CRUD operations.
+- Tested utils helper functions for Historical performance calculations.
+- Tested JWT Authentications.
+- Tested Signals.
+
+## Pre-commit Hook
+
+A pre-commit hook is configured to ensure PEP8 compliance and run tests before each commit. This helps maintain code quality and ensures that only passing code is committed to the repository.
+
+## Contributing

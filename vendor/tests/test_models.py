@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from vendor.models import Vendor, PurchaseOrder, HistoricalPerformance
+from datetime import datetime
 
 
 class DatabaseTest(APITestCase):
@@ -12,11 +13,11 @@ class DatabaseTest(APITestCase):
             password="secretpassword",
         )
 
-        # Create multiple Vendor instances
+        # Create Vendor instances
         cls.vendor = Vendor.objects.create(
             name="Test Vendor",
             contact_details="Mumbai India",
-            vendor_code="VND-2405100001",
+            vendor_code=generate_vendor_code(),
             on_time_delivery_rate=98.0,
             quality_rating_avg=10.0,
             average_response_time=120.45,
@@ -127,9 +128,7 @@ class DatabaseTest(APITestCase):
 
     def test_vendor_model(self):
         self.assertEqual(self.vendor.name, "Test Vendor")
-        self.assertEqual(
-            self.vendor.vendor_code, "VND-2405100001"
-        )  # Use today's date as created database will use today's datatime to create vendor code
+        self.assertEqual(self.vendor.vendor_code, generate_vendor_code())
         self.assertEqual(self.vendor.contact_details, "Mumbai India")
         self.assertEqual(self.vendor.on_time_delivery_rate, 98.0)
         self.assertEqual(self.vendor.quality_rating_avg, 10.0)
@@ -142,3 +141,9 @@ class DatabaseTest(APITestCase):
         self.assertEqual(self.historical_perfomance.quality_rating_avg, 3.66666666)
         self.assertEqual(self.historical_perfomance.average_response_time, 72)
         self.assertEqual(self.historical_perfomance.fulfillment_rate, 66.66666)
+
+
+def generate_vendor_code():
+    now = datetime.now()
+    formatted_date = now.strftime("%y%m%d")
+    return f"VND-{formatted_date}0001"
